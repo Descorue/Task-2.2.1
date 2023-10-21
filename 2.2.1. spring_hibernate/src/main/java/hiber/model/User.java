@@ -80,8 +80,9 @@ public class User {
     @Override
     public String toString() {
         return "User: \n" +
-                "Имя пользователя: " + firstName +
+                "ID пользователя: " + id +
+                "\nИмя пользователя: " + firstName +
                 "\nФамилия пользователя: " + lastName +
-                "\nemail пользователя: " + email;
+                "\nemail пользователя: " + email + car.toString();
     }
 }

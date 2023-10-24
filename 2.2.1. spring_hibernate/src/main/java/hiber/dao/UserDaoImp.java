@@ -31,7 +31,6 @@ public class UserDaoImp implements UserDao {
     public User getUserByCar(String model, int series) {
         Session session = sessionFactory.openSession();
         String hql = "SELECT user FROM User user JOIN user.car car WHERE car.model = :carModel AND car.series = :carSeries";
-        //String hql = "FROM User user WHERE user.id IN (SELECT car.id FROM Car car WHERE car.model = :carModel AND car.series = :carSeries)";
         TypedQuery<User> typedQuery = session.createQuery(hql, User.class)
                 .setParameter("carModel", model)
                 .setParameter("carSeries", series);

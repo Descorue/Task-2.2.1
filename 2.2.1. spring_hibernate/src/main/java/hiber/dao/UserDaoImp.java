@@ -6,6 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
 import javax.persistence.TypedQuery;
 import java.util.List;
 
@@ -14,35 +15,37 @@ import java.util.List;
 public class UserDaoImp implements UserDao {
 
 
-   private SessionFactory sessionFactory;
-   @Autowired
-   public UserDaoImp(SessionFactory sessionFactory){
-      this.sessionFactory = sessionFactory;
-   }
+    private final SessionFactory sessionFactory;
 
-   @Override
-   public void add(User user) {
-      sessionFactory.getCurrentSession().save(user);
-   }
+    @Autowired
+    public UserDaoImp(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
-   @Override
-   public User getUserByCar(String model, int series) {
-      Session session = sessionFactory.openSession();
-      String hql = "FROM User user WHERE user.id IN (SELECT car.id FROM Car car WHERE car.model = :carModel AND car.series = :carSeries)";
-      TypedQuery<User> typedQuery = session.createQuery(hql, User.class)
-              .setParameter("carModel", model)
-              .setParameter("carSeries", series);
+    @Override
+    public void add(User user) {
+        sessionFactory.getCurrentSession().save(user);
+    }
 
-       User user = typedQuery.getSingleResult();
+    @Override
+    public User getUserByCar(String model, int series) {
+        Session session = sessionFactory.openSession();
+        String hql = "SELECT user FROM User user JOIN user.car car WHERE car.model = :carModel AND car.series = :carSeries";
+        //String hql = "FROM User user WHERE user.id IN (SELECT car.id FROM Car car WHERE car.model = :carModel AND car.series = :carSeries)";
+        TypedQuery<User> typedQuery = session.createQuery(hql, User.class)
+                .setParameter("carModel", model)
+                .setParameter("carSeries", series);
 
-      session.close();
-      return user;
+        User user = typedQuery.getSingleResult();
 
-   }
+        session.close();
+        return user;
 
-   @Override
-   public List<User> listUsers() {
-      TypedQuery<User> query=sessionFactory.getCurrentSession().createQuery("from User");
-      return query.getResultList();
-   }
+    }
+
+    @Override
+    public List<User> listUsers() {
+        TypedQuery<User> query = sessionFactory.getCurrentSession().createQuery("from User");
+        return query.getResultList();
+    }
 }
